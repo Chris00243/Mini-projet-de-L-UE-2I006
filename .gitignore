@@ -1,4 +1,4 @@
 *.c
 *.h
-G*
-M*
+GdeBiblio
+Makefile
