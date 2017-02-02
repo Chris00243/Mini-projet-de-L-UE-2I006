@@ -317,29 +317,38 @@ Biblio* rechercher_doublons_livre(Biblio* B)
 		
 		s_livre* tmp = (B_meme_titre)->L;
 		
+		s_livre* sauvegarde = cour->next;		
+	
 		while(tmp){
 		
 			if(tmp->num != cour->num){
 
-				inserer_livre(&B_doublons, clone(cour));
-				(B_doublons)->nbliv += 1;
-				
-				s_livre *tmp1 = (B_meme_titre)->L;
+				if(B_doublons->nbliv == 0){
 
-				while(tmp1){
+					inserer_livre(&B_doublons, clone(cour));
+						
+				}else{
 			
-					supprimer_livre(&B, tmp1->num);		
-					tmp1 = tmp1->next;
+					Biblio *B_meme_auteur1 = initialise_biblio();
+					Biblio *B_meme_titre1 = initialise_biblio();
 
-				}
+					rechercher_livres_meme_auteur(B_doublons, cour->auteur, &B_meme_auteur1);
 		
-				break;
+					rechercher_livres_meme_titre(B_meme_auteur1, cour->titre, &B_meme_titre1);
+		
+					if(B_meme_titre1->nbliv == 0){
+
+						inserer_livre(&B_doublons, clone(cour));
+						
+					}
+				  }
+				
 			}
 			
 			tmp = tmp->next;
 		}						
 
-		cour = cour->next;
+		cour = sauvegarde;
 	}
 
 	return B_doublons;		

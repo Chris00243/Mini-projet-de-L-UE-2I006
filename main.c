@@ -12,12 +12,16 @@ int main(int argc, char argv[])
 	lecture_n_entree("GdeBiblio.txt", 5, &B);
 	afficher_biblio(B);
 
-	s_livre *L1, *L2, *L3, *L4;
+	s_livre *L1, *L2, *L3, *L4, *L5, *L6, *L7, *L8;
 
 	L1 = creer_livre("KASA", "savoir");
 	L2 = creer_livre("CHRIS","physique");
 	L3 = creer_livre("KASA", "savoir");
 	L4 = creer_livre("KASA", "physique");
+	L5 = creer_livre("CHRIS", "physique");
+	L6 = creer_livre("KASA", "savoir");
+	L7 = creer_livre("KASA", "physique");
+	L8 = creer_livre("KASA", "savoir");
 
 	afficher_livre(L1);
 	afficher_livre(L2);
@@ -28,6 +32,10 @@ int main(int argc, char argv[])
 	inserer_livre(&B, L2);
 	inserer_livre(&B, L3);
 	inserer_livre(&B, L4);
+	inserer_livre(&B, L5);
+	inserer_livre(&B, L6);
+	inserer_livre(&B, L7);
+	inserer_livre(&B, L8);
 
 	afficher_biblio(B);
 
@@ -41,7 +49,7 @@ int main(int argc, char argv[])
 	B6 = initialise_biblio();	
 	B7 = initialise_biblio();	
 
-	//R
+	
 
 	R1 = rechercher_livre_num(B, 1);
 	afficher_livre(R1);
@@ -67,7 +75,7 @@ int main(int argc, char argv[])
 	rechercher_livres_meme_auteur(B,"TOTO", &B1);
 	afficher_biblio(B1);
 	
-	supprimer_livre(&B, 45);
+	supprimer_livre(&B, L7->num);
 
 	B4 = rechercher_doublons_livre(B);
 	afficher_biblio(B4);	
