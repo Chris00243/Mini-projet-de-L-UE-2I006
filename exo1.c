@@ -182,29 +182,30 @@ s_livre* rechercher_livre_num(Biblio *B, int num)
 	  }			
 }
 
-/* La recherche d'un ouvrage par son titre. */
+/* La recherche d'un ouvrage par son titre. Deux livres peuvent avoir le même titre mais des auteurs différents. */
 
-s_livre* rechercher_livre_titre(Biblio *B, char *titre)
+void rechercher_livres_meme_titre(Biblio *B, char *titre, Biblio **B_meme_titre)
 {
-	if(B==NULL || titre == NULL){
+	if(B==NULL || titre == NULL || B_meme_titre == NULL){
 
-		printf(" Bibliothèque vide ou titre NULL");			
-		return NULL;
+		printf(" Bibliothèque vide ou titre NULL ou echec de passage des paramètres \n");			
+		return;
 	}
 
 	s_livre *tmp = B->L;
+	s_livre *cour = NULL;
 
-	while(tmp != NULL && strcmp(tmp->titre, titre) != 0){
+	while(tmp){
+		
+		cour = tmp;
+		
+		if(strcmp(cour->titre, titre) == 0){
+		
+			inserer_livre(B_meme_titre, clone(cour));
+		}
 		
 		tmp = tmp->next;
 	}
-	
-	if(tmp !=NULL) return tmp;
-	else{		 
-	
-		printf(" aucun livre de titre : %s\n", titre);
-		return NULL;		
-	  }		
 }
 
 /* La recherche de tous les livres d'un même auteur */
@@ -296,59 +297,53 @@ void supprimer_livre(Biblio **B, int num)
 Biblio* rechercher_doublons_livre(Biblio* B)
 {
 	if(B==NULL){
-		printf(" Bibliothèque vide\n");
-		return NULL;
-	
-	}	
-	
+
+		printf("Bibliothèque vide");
+		return NULL;	
+	}
+
+	Biblio *B_doublons = initialise_biblio();
+
 	s_livre *cour = B->L;
-	Biblio *B_doublons = initialise_biblio();  /* la liste des tous livres qui sont des doublons ou plus  */
-	
 
 	while(cour){
 
-		Biblio *B_meme_auteur = initialise_biblio();        /* la liste de tous les livres ayant même auteur */
+		Biblio *B_meme_auteur = initialise_biblio();
+		Biblio *B_meme_titre = initialise_biblio();		
 
-		rechercher_livres_meme_auteur(B, cour->auteur, &(B_meme_auteur)); /* livres ayant meme auteur que cour */
-
-		s_livre *livre = NULL;
-
+		rechercher_livres_meme_auteur(B, cour->auteur, &B_meme_auteur);
 		
-		livre = rechercher_livre_titre(B_meme_auteur, cour->titre);   /* on cherche, dans la liste des livres ayant même auteur que cour, 
-											un livre ayant le même titre que cour  */
+		rechercher_livres_meme_titre(B_meme_auteur, cour->titre, &B_meme_titre);
+		
+		s_livre* tmp = (B_meme_titre)->L;
+		
+		while(tmp){
+		
+			if(tmp->num != cour->num){
 
-		if(livre->num != cour->num){  /*  */
-
-			if( (B_doublons)->L == NULL ){   /* B_doublons contient aucun livre, donc on ajoute directement le livre */
-
-				inserer_livre( &(B_doublons), clone(cour));
+				inserer_livre(&B_doublons, clone(cour));
 				(B_doublons)->nbliv += 1;
-			
-			}else{
-			
-				B_meme_auteur = initialise_biblio();
-				rechercher_livres_meme_auteur(B_doublons, cour->auteur, &(B_meme_auteur)); 
-				s_livre *livre1 = NULL;
-				livre1 = rechercher_livre_titre(B_meme_auteur, cour->titre);				
-			
-				if( livre1 == NULL ){
 				
-					inserer_livre( &(B_doublons), clone(cour));
-					(B_doublons)->nbliv += 1;
+				s_livre *tmp1 = (B_meme_titre)->L;
+
+				while(tmp1){
+			
+					supprimer_livre(&B, tmp1->num);		
+					tmp1 = tmp1->next;
+
 				}
-			  }
-		}
 		
-		
-		
-		cour = cour->next;	
+				break;
+			}
+			
+			tmp = tmp->next;
+		}						
+
+		cour = cour->next;
 	}
 
-	return B_doublons;
+	return B_doublons;		
 }
-
-
-
 
 
 

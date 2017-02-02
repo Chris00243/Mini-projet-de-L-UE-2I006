@@ -15,7 +15,7 @@ int main(int argc, char argv[])
 	s_livre *L1, *L2, *L3, *L4;
 
 	L1 = creer_livre("KASA", "savoir");
-	L2 = creer_livre("CHRIS","maths 1");
+	L2 = creer_livre("CHRIS","physique");
 	L3 = creer_livre("KASA", "savoir");
 	L4 = creer_livre("KASA", "physique");
 
@@ -32,13 +32,14 @@ int main(int argc, char argv[])
 	afficher_biblio(B);
 
 	s_livre *R1, *R2, *R3, *R4;
-	Biblio *B1, *B2, *B3, *B4;
+	Biblio *B1, *B2, *B3, *B4, *B6, *B7;
 	
 	B1 = initialise_biblio();
 	B2 = initialise_biblio();
 	B3 = initialise_biblio();	
 	B4 = initialise_biblio();
-	
+	B6 = initialise_biblio();	
+	B7 = initialise_biblio();	
 
 	//R
 
@@ -48,11 +49,11 @@ int main(int argc, char argv[])
 	R2 = rechercher_livre_num(B, 12);
 	afficher_livre(R2);
 
-	R3 = rechercher_livre_titre(B, "savoir");
-	afficher_livre(R3);
+	rechercher_livres_meme_titre(B,"savoir", &B6);
+	afficher_biblio(B6);
 
-	R4 = rechercher_livre_titre(B, R3->titre);
-	afficher_livre(R4);
+	rechercher_livres_meme_titre(B,"reve", &B7);
+	afficher_biblio(B7);
 
 	
 
@@ -71,7 +72,7 @@ int main(int argc, char argv[])
 	B4 = rechercher_doublons_livre(B);
 	afficher_biblio(B4);	
 
-	//afficher_biblio(B);
+	afficher_biblio(B);
 	
 
 	return 0;

@@ -74,9 +74,9 @@ void inserer_livre(Biblio **B, s_livre *nouveau);
 
 s_livre* rechercher_livre_num(Biblio *B, int num);
 
-/* La recherche d'un ouvrage par son titre. */
+/* La recherche d'un ouvrage par son titre. Deux livres peuvent avoir le même titre mais des auteurs différents. */
 
-s_livre* rechercher_livre_titre(Biblio *B, char *titre);
+void rechercher_livres_meme_titre(Biblio *B, char *titre, Biblio **B_meme_titre);
 
 /* La recherche de tous les livres d'un même auteur */
 
@@ -89,7 +89,6 @@ void supprimer_livre(Biblio **B, int num);
 /* la fonction renvoie la liste des livres qui sont des doublons ou plus */
 
 Biblio* rechercher_doublons_livre(Biblio* B);
-
 
 
 
