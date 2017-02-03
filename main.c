@@ -1,87 +1,159 @@
 #ifndef MAIN_C
 #define MAIN_C
 
+#define taille_maxi 25
+
 #include "exo1.h"
 
+#define menu()   puts(" Bonjour \n\n"); \
+	         puts(" 1. afficher la bibliothèque\n "); \
+	         puts(" 2. supprimer un livre dans la bibliothèque\n"); \
+	         puts(" 3. rechercher un livre dans la bibliothèque par son numéro\n"); \
+	         puts(" 4. rechercher un ensemble de livres par un titre  dans la bibliothèquedans\n"); \
+		 puts(" 5. rechercher un ensemble de livres d'un même auteur dans la bibliothèque\n"); \
+		 puts(" 6.rechercher tous les livres en doublons ou plus dans la bibliothèque\n"); \
+		 puts(" 7. créer, afficher et ajouter un livre dans la bibliothèque\n"); \
+		 puts(" 8. sortir du programme \n");
+		 	
 #endif
 
-int main(int argc, char argv[])
+
+
+
+
+
+
+
+
+
+
+int main(int argc, char* argv[])
 {
-	Biblio *B = initialise_biblio();
-	afficher_biblio(B);
-	lecture_n_entree("GdeBiblio.txt", 5, &B);
-	afficher_biblio(B);
+   /* argc est le nombre de mots de la ligne d e commmande
+      argv est un tableau de chaines de caractères : une chaine par mot de la ligne de commande */	
 
-	s_livre *L1, *L2, *L3, *L4, *L5, *L6, *L7, *L8;
+	int lecture;
+	char *nomfic;
 
-	L1 = creer_livre("KASA", "savoir");
-	L2 = creer_livre("CHRIS","physique");
-	L3 = creer_livre("KASA", "savoir");
-	L4 = creer_livre("KASA", "physique");
-	L5 = creer_livre("CHRIS", "physique");
-	L6 = creer_livre("KASA", "savoir");
-	L7 = creer_livre("KASA", "physique");
-	L8 = creer_livre("KASA", "savoir");
+	int nlignes;
 
-	afficher_livre(L1);
-	afficher_livre(L2);
-	afficher_livre(L3);
-	afficher_livre(L4);
+	Biblio *B;
+	initialise_biblio(&B);
 
-	inserer_livre(&B, L1);
-	inserer_livre(&B, L2);
-	inserer_livre(&B, L3);
-	inserer_livre(&B, L4);
-	inserer_livre(&B, L5);
-	inserer_livre(&B, L6);
-	inserer_livre(&B, L7);
-	inserer_livre(&B, L8);
-
-	afficher_biblio(B);
-
-	s_livre *R1, *R2, *R3, *R4;
-	Biblio *B1, *B2, *B3, *B4, *B6, *B7;
+	if(argc != 3){
+		
+		printf("Erreur format : %s ", argv[0]);
 	
-	B1 = initialise_biblio();
-	B2 = initialise_biblio();
-	B3 = initialise_biblio();	
-	B4 = initialise_biblio();
-	B6 = initialise_biblio();	
-	B7 = initialise_biblio();	
+	}
 
+	nomfic = strdup(argv[1]); /* strdup alloue et copie une chaine de caractères */
+	nlignes = atoi(argv[2]); /* atoi transforme une chaine de caractères en entier */
+
+	printf("\\n LECTURE \n\n");
+	lecture_n_entree(nomfic, nlignes, &B);
+
+	char titre[taille_maxi];
+	char auteur[taille_maxi];
+	int num;
+
+	s_livre *livre;	
 	
+	do{
 
-	R1 = rechercher_livre_num(B, 1);
-	afficher_livre(R1);
+		menu() /*  affiche le menu */
+		scanf("%d", &lecture);
 
-	R2 = rechercher_livre_num(B, 12);
-	afficher_livre(R2);
+		switch(lecture){
 
-	rechercher_livres_meme_titre(B,"savoir", &B6);
-	afficher_biblio(B6);
+			case 1 :{ 
 
-	rechercher_livres_meme_titre(B,"reve", &B7);
-	afficher_biblio(B7);
+				afficher_biblio(B);
+				break;
+			}
 
-	
+			case 2 :{
+					
+					puts("entrer le numéro du livre à supprimer : ");
+					scanf("%d", &num);
+					supprimer_livre(&B, num);
+					break;
+			}
 
-	rechercher_livres_meme_auteur(B,"KASA", &B3);
-	afficher_biblio(B3);
-	
-	
-	rechercher_livres_meme_auteur(B,"CHRIS", &B2);
-	afficher_biblio(B2);
+			case 3 :{
+					
+					puts("entrer le numéro du livre à chercher : ");
+					scanf("%d", &num);
+					afficher_livre(rechercher_livre_num(B, num));
+					break;
+				
+			}
 
-	rechercher_livres_meme_auteur(B,"TOTO", &B1);
-	afficher_biblio(B1);
-	
-	supprimer_livre(&B, L7->num);
+			case 4 :{
+					
+					puts("entrer le titre du livre à chercher : ");
+					scanf("%s",titre);
 
-	B4 = rechercher_doublons_livre(B);
-	afficher_biblio(B4);	
+					Biblio *B_meme_titre;
+					initialise_biblio(&B_meme_titre);
+					rechercher_livres_meme_titre(B, titre, &B_meme_titre);
+					afficher_biblio(B_meme_titre);
+					break;
 
-	afficher_biblio(B);
-	
+				
+			}
+
+
+			case 5 :{
+
+				 	
+					puts("entrer le nom de l'auteur des livres à chercher : ");
+					scanf("%s",auteur);
+
+					Biblio *B_meme_auteur;
+					initialise_biblio(&B_meme_auteur);
+					rechercher_livres_meme_auteur(B, titre, &B_meme_auteur);
+					afficher_biblio(B_meme_auteur);
+					break;
+			}
+
+			case 6 :{
+
+					rechercher_doublons_livre(B);
+					break;
+			}
+
+			case 7 :{
+					puts("entrez le nom de l'auteur de votre livre : ");
+					scanf("%s", auteur);
+					
+					puts("entrez le titre de votre livre : ");
+					scanf("%s", titre);
+
+					livre = creer_livre(auteur, titre);
+
+					inserer_livre(&B, livre);
+				
+					afficher_livre(livre);
+
+					break;
+			}
+
+			case 8 :{
+					puts("\nau revoir, à plus\n\n\n");
+					break;
+			}
+
+			default : {
+					puts("je ne connais pas cette commande\n\n");
+					break;
+
+			}
+
+
+		}
+
+	}while(lecture!= 8);
+		
 
 	return 0;
 

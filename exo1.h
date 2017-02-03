@@ -31,7 +31,7 @@ struct Biblio {
 
 /* Initialise la bibliothèque */
 
-Biblio* initialise_biblio();
+void initialise_biblio(Biblio **B);
 
 /* fonction non demandée : elle affiche la strucure Biblio */
 

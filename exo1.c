@@ -18,12 +18,12 @@ unsigned static int cpt =1;
 
 /* Initialise la bibliothèque */
 
-Biblio* initialise_biblio()
+void initialise_biblio(Biblio **B)
 {
-	Biblio *nouveau = (Biblio*) malloc(sizeof(Biblio));
+	(*B) = (Biblio*) malloc(sizeof(Biblio));
 
-	nouveau->L = NULL;
-	nouveau->nbliv = 0;
+	(*B)->L = NULL;
+	(*B)->nbliv = 0;
 }
 
 /* fonction non demandée : elle affiche la strucure Biblio */
@@ -302,14 +302,15 @@ Biblio* rechercher_doublons_livre(Biblio* B)
 		return NULL;	
 	}
 
-	Biblio *B_doublons = initialise_biblio();
+	Biblio *B_doublons; 
+	initialise_biblio(&B_doublons);
 
 	s_livre *cour = B->L;
 
 	while(cour){
 
-		Biblio *B_meme_auteur = initialise_biblio();
-		Biblio *B_meme_titre = initialise_biblio();		
+		Biblio *B_meme_auteur; initialise_biblio(&B_meme_auteur);
+		Biblio *B_meme_titre;  initialise_biblio(&B_meme_titre);		
 
 		rechercher_livres_meme_auteur(B, cour->auteur, &B_meme_auteur);
 		
@@ -329,8 +330,8 @@ Biblio* rechercher_doublons_livre(Biblio* B)
 						
 				}else{
 			
-					Biblio *B_meme_auteur1 = initialise_biblio();
-					Biblio *B_meme_titre1 = initialise_biblio();
+					Biblio *B_meme_auteur1;  initialise_biblio(&B_meme_auteur1);
+					Biblio *B_meme_titre1;  initialise_biblio(&B_meme_titre1);
 
 					rechercher_livres_meme_auteur(B_doublons, cour->auteur, &B_meme_auteur1);
 		
