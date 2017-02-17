@@ -2,14 +2,14 @@
 #define EXO1_C
 
 #include "exo1.h"
-#define taille_max 100 
-#define NUM 100 
+ 
+
 
 
 #endif
 
 
-unsigned static int cpt =1;
+unsigned static int cpt =0;
 
 
 /******************************************************* LES FONCTIONS DE LA STRUCTURE Biblio ***********************************************************************/
@@ -39,10 +39,11 @@ void afficher_biblio(Biblio *B)
 		printf("La liste chainée des livres : \n\n");	
 
 		while(tmp){
-			printf("[%d %s %s]", tmp->num, tmp->auteur, tmp->titre);
-			printf(" ==> ");
+
+			printf(" ==> [%d %s %s] ==>", tmp->num, tmp->auteur, tmp->titre);
 			tmp= tmp->next;
 		}
+		printf("NULL");
 		printf("\n\n Nombre de  livres : %d \n\n ", B->nbliv);
 	}
 }
@@ -57,24 +58,34 @@ void afficher_biblio(Biblio *B)
 
 s_livre* creer_livre(char * auteur, char * titre)
 {
-	s_livre *nouveau = (s_livre*) malloc(sizeof(s_livre));
+	if(auteur!=NULL && titre !=NULL){
+
+		s_livre *nouveau = (s_livre*) malloc(sizeof(s_livre));
+		if(nouveau == NULL) return NULL;
+
+		nouveau->titre = strdup(titre);
+		nouveau->auteur = strdup(auteur);
+		nouveau->num = cpt+100000;
+		cpt++;
+		nouveau->next == NULL;
+		return nouveau;
+	}
 	
-	nouveau->titre = strdup(titre);
-	nouveau->auteur = strdup(auteur);
-	nouveau->num = cpt+100000;
-	cpt++;
-	nouveau->next == NULL;
-	return nouveau;
+	return NULL;
 }
 
 /* fonction non demandée : elle affiche la strucure s_livre */
 
 void afficher_livre(s_livre *L)
 {
+	printf("\n Livre : ");
+
 	if(L != NULL){ 
-		printf("\n Livre : ");	
-		printf("[ num = %d  auteur : %s titre : %s ]\n", L->num, L->auteur, L->titre);
+			
+		printf("[ num = %d  auteur : %s titre : %s ] ", L->num, L->auteur, L->titre);
 	}
+
+	printf("==> NULL\n");
 }
 
 /* Fonction non demandée : elle fait une copie du meme livre avec le meme numéro d'enregistrement. Cette fontion est utilisée dans la fonction rechercher_livres_meme_auteur.....  */
@@ -82,6 +93,10 @@ void afficher_livre(s_livre *L)
 s_livre* clone ( s_livre *Acloner)
 {
 	s_livre *copie = (s_livre*) malloc(sizeof(s_livre)); 
+	if(copie == NULL){ 
+		puts("echec clonage"); 
+		return NULL;
+	}
 
 	copie->auteur = Acloner->auteur;
 	copie->titre = Acloner->titre;
@@ -103,12 +118,12 @@ s_livre* clone ( s_livre *Acloner)
 void lecture_n_entree(char *nomfic, int n, Biblio **B)
 {	
 	int i;
-	char s1[taille_max];
-	char s2[taille_max];
+	char s1[taille_maxi];
+	char s2[taille_maxi];
 	
 	
 	
-	if(B != NULL && n >0 ){   /* Si L est vide ou n est inférieur ou égale à zéro, rien à faire */
+	if(B != NULL && n >0){   /* Si L est vide ou n est inférieur ou égale à zéro, rien à faire */
 		
 		FILE *f = fopen(nomfic, "r+"); /* ouverture du fichier en mode lectuer et écriture */
 		
@@ -119,8 +134,8 @@ void lecture_n_entree(char *nomfic, int n, Biblio **B)
 				s_livre *nouveau = (s_livre*) malloc(sizeof(s_livre));
 				
 				nouveau->num = GetEntier(f);
-				GetChaine(f,taille_max, s1);		
-				GetChaine(f,taille_max, s2);
+				GetChaine(f,taille_maxi, s1);		
+				GetChaine(f,taille_maxi, s2);
 
 				nouveau->titre = strdup(s2);
 				nouveau->auteur = strdup(s1);
@@ -143,8 +158,8 @@ void lecture_n_entree(char *nomfic, int n, Biblio **B)
 void inserer_livre(Biblio **B, s_livre *nouveau)
 {
 
-	if( B==NULL && nouveau ==NULL) return;
-	if( *B==NULL){ /* Bibliothèque encore vide */
+	if( B==NULL || *B==NULL || nouveau ==NULL) return;
+	if( (*B)->L==NULL){ /* Bibliothèque encore vide */
 
 		(*B)->L = nouveau;
 		(*B)->nbliv += 1;
@@ -154,7 +169,7 @@ void inserer_livre(Biblio **B, s_livre *nouveau)
 	nouveau->next = (*B)->L;
 	(*B)->L = nouveau;
 	(*B)->nbliv += 1;
-	return;
+	
 }
 
 
